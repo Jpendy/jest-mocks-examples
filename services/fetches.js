@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const request = require('superagent')
 
 const getQuote = () => {
     return fetch('http://futuramaapi.herokuapp.com/api/quotes/1')
@@ -6,6 +7,12 @@ const getQuote = () => {
         .then(([results]) => results)
 }
 
+const getSuperQuote = () => {
+    return request.get('http://futuramaapi.herokuapp.com/api/quotes/1')
+        .then(({ body }) => body)
+}
+
 module.exports = {
-    getQuote
+    getQuote,
+    getSuperQuote
 }
