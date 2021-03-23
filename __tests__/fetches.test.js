@@ -38,7 +38,7 @@ describe('node-fetch mock and superagent mock', () => {
             }]
         })
 
-        const [res] = await getSuperQuote()
+        const res = await getSuperQuote()
 
         expect(res).toEqual({
             character: expect.any(String),
