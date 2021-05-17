@@ -1,11 +1,40 @@
 const { getQuote, getSuperQuote } = require("../services/fetches")
+import { rest } from 'msw';
+import { setupServer } from 'msw/node'
 const fetch = require('node-fetch')
 const request = require('superagent')
 
+
+// jest mock mocking fetch api's way
 jest.mock('node-fetch')
 jest.mock('superagent')
 
+//msw server way of mocking, remember to start and close server, example below in describe block
+const server = setupServer(
+    rest.get('https://futuramaapi.herokuapp.com/api/quotes/1', (req, res, ctx) => {
+        return res(
+            ctx.json([{
+                character: 'Fry',
+                quote: 'whatever man',
+                image: 'imageurl'
+            }])
+        )
+    })
+)
+
+//jest mock call back way, mocking file path, if single function in file
+jest.mock('../services/fetchCharacters', () => () => [{ character: 'Fry', quote: 'whatever man', image: 'imageurl' }])
+
+//jest mock call back way, mocking file path, if multiple functions in file
+jest.mock('../services/fetches', () => ({
+    fetchQuotes: () => [{ character: 'Fry', quote: 'whatever man', image: 'imageurl' }],
+    fetchCharacter: () => ({ character: 'Fry', quote: 'whatever man', image: 'imageurl' })
+}))
+
 describe('node-fetch mock and superagent mock', () => {
+    beforeAll(() => server.listen())
+    afterAll(() => server.close())
+
 
     it('node-fetch mock', async () => {
 
